@@ -28,7 +28,7 @@ int main(){
             mostrarEstadisticas();
             break;
         case 6:
-            printf("Chau chupapija");
+            printf("Chau");
             break;
         default:
             printf("Opcion invalida");
