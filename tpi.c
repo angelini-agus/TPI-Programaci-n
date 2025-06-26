@@ -13,9 +13,13 @@ int main()
     char nombreApellido[240][99];
     int edad[240];
     char codDestino[240][5];
-    int cantDestino[4][60];
-    cantDestino[0][]="BRA";
-    cargaPasajeros(dni);
+    int cantDestino[4];
+    //cantDestino[0]="BRA";
+    //cantDestino[1]="MDQ";
+    //cantDestino[2]="MDQ";
+    //cantDestino[3]="MZA";
+    //cantDestino[4]="BRC";
+    cargaPasajeros(dni, nombreApellido, edad, codDestino, cantDestino);
     do
     {
         printf("Ingrese op sistema \n1. Mostrar lista de pasajeros ordenada por Apellido y Nombre \n2. Mostrar lista de pasajeros ordenada por Código Destino y Apellido - Nombre \n3. Mostrar lista de Destinos \n4. Buscar por pasajero \n5. Mostrar estadísticas \n6. Salir\n");
@@ -65,6 +69,7 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
         {
             printf("Ingrese el DNI");
             scanf("%s", dnis[i]);
+            while (getchar() != '\n');//IMPORTANTE LIMPIAR EL BUFFER
             validDni = validarDNI(dnis[i]);
             if (validDni == 1)
             {
@@ -78,28 +83,39 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
                 nombreApellido[i][strcspn(nombreApellido[i], "\n")] = '\0';
                 printf("Ingrese la edad");
                 scanf("%d",&edad[i]);
+                // Limpiar buffer de entrada
+                while (getchar() != '\n');
+                int destinoValido = 0;
                 do
                 {
-                    printf("Ingrese el codigo del destino al que se dirije\n BRA - MDQ - MZA - BRC ");
+                    printf("Ingrese el codigo del destino al que se dirige\nBRA - MDQ - MZA - BRC: ");
                     fgets(codDestino[i], 5, stdin);
                     codDestino[i][strcspn(codDestino[i], "\n")] = '\0';
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (strcmp(cantDestino[i], codDestino[i])==0)
-                        {
-                            /* code */
-                        }
-                        
-                    }
-                    
-                } while ();
-                
-                
 
+                    // Convertir a minusculas para comparar
+                    for (int k = 0; codDestino[i][k]; k++) {
+                        codDestino[i][k] = tolower(codDestino[i][k]);
+                    }
+
+                    if (strcmp(codDestino[i], "bra") == 0 && cantDestino[0] < 60) {
+                        cantDestino[0]++;
+                        destinoValido = 1;
+                    } else if (strcmp(codDestino[i], "mdq") == 0 && cantDestino[1] < 60) {
+                        cantDestino[1]++;
+                        destinoValido = 1;
+                    } else if (strcmp(codDestino[i], "mza") == 0 && cantDestino[2] < 60) {
+                        cantDestino[2]++;
+                        destinoValido = 1;
+                    } else if (strcmp(codDestino[i], "brc") == 0 && cantDestino[3] < 60) {
+                        cantDestino[3]++;
+                        destinoValido = 1;
+                    } else {
+                        printf("El codigo que ingreso no es correcto o ya se alcanzo el maximo de 60 pasajeros para ese destino.\n");
+                    }
+                } while (destinoValido==0);
             }
         } while (validDni == 1);
     }
-    
     return 0;
 }
 
