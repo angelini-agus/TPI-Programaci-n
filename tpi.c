@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240], char codDestino[240][5]);
+int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240], char codDestino[240][5], int cantDestino[4]);
 int validarDNI(char dni[]);
 
 int main()
@@ -13,7 +13,8 @@ int main()
     char nombreApellido[240][99];
     int edad[240];
     char codDestino[240][5];
-
+    int cantDestino[4][60];
+    cantDestino[0][]="BRA";
     cargaPasajeros(dni);
     do
     {
@@ -48,7 +49,7 @@ int main()
     return 0;
 }
 
-int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240], char codDestino[240][5])
+int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240], char codDestino[240][5], int cantDestino[])
 {
     int cant = 0;
     int validDni;
@@ -77,9 +78,23 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
                 nombreApellido[i][strcspn(nombreApellido[i], "\n")] = '\0';
                 printf("Ingrese la edad");
                 scanf("%d",&edad[i]);
-                printf("Ingrese el codigo del destino al que se dirije\n BRA - MDQ - MZA - BRC ");
-                fgets(codDestino[i], 5, stdin);
-                codDestino[i][strcspn(codDestino[i], "\n")] = '\0';
+                do
+                {
+                    printf("Ingrese el codigo del destino al que se dirije\n BRA - MDQ - MZA - BRC ");
+                    fgets(codDestino[i], 5, stdin);
+                    codDestino[i][strcspn(codDestino[i], "\n")] = '\0';
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (strcmp(cantDestino[i], codDestino[i])==0)
+                        {
+                            /* code */
+                        }
+                        
+                    }
+                    
+                } while ();
+                
+                
 
             }
         } while (validDni == 1);
