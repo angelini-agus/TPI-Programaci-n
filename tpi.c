@@ -97,20 +97,36 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
                         codDestino[i][k] = tolower(codDestino[i][k]);
                     }
 
-                    if (strcmp(codDestino[i], "bra") == 0 && cantDestino[0] < 60) {
-                        cantDestino[0]++;
-                        destinoValido = 1;
-                    } else if (strcmp(codDestino[i], "mdq") == 0 && cantDestino[1] < 60) {
-                        cantDestino[1]++;
-                        destinoValido = 1;
-                    } else if (strcmp(codDestino[i], "mza") == 0 && cantDestino[2] < 60) {
-                        cantDestino[2]++;
-                        destinoValido = 1;
-                    } else if (strcmp(codDestino[i], "brc") == 0 && cantDestino[3] < 60) {
-                        cantDestino[3]++;
-                        destinoValido = 1;
+                    if (strcmp(codDestino[i], "bra") == 0) {
+                        if (cantDestino[0] < 60) {
+                            cantDestino[0]++;
+                            destinoValido = 1;
+                        } else {
+                            printf("Ya se alcanzó el máximo de 60 pasajeros para BRA.\n");
+                        }
+                    } else if (strcmp(codDestino[i], "mdq") == 0) {
+                        if (cantDestino[1] < 60) {
+                            cantDestino[1]++;
+                            destinoValido = 1;
+                        } else {
+                            printf("Ya se alcanzó el máximo de 60 pasajeros para MDQ.\n");
+                        }
+                    } else if (strcmp(codDestino[i], "mza") == 0) {
+                        if (cantDestino[2] < 60) {
+                            cantDestino[2]++;
+                            destinoValido = 1;
+                        } else {
+                            printf("Ya se alcanzó el máximo de 60 pasajeros para MZA.\n");
+                        }
+                    } else if (strcmp(codDestino[i], "brc") == 0) {
+                        if (cantDestino[3] < 60) {
+                            cantDestino[3]++;
+                            destinoValido = 1;
+                        } else {
+                            printf("Ya se alcanzó el máximo de 60 pasajeros para BRC.\n");
+                        }
                     } else {
-                        printf("El codigo que ingreso no es correcto o ya se alcanzo el maximo de 60 pasajeros para ese destino.\n");
+                        printf("El código que ingresó no es correcto.\n");
                     }
                 } while (destinoValido==0);
             }
