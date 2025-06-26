@@ -70,6 +70,7 @@ int validarDNI(char dni[]){
     int longitud=0;
     longitud=strlen(dni);
     while (longitud>8 || longitud<7); 
+    /*PRUEBA*/
     
     return 0;
 }
