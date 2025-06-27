@@ -16,9 +16,8 @@ int main()
     int cantDestino[4];
     //cantDestino[0]="BRA";
     //cantDestino[1]="MDQ";
-    //cantDestino[2]="MDQ";
-    //cantDestino[3]="MZA";
-    //cantDestino[4]="BRC";
+    //cantDestino[2]="MZA";
+    //cantDestino[3]="BRC";
     cargaPasajeros(dni, nombreApellido, edad, codDestino, cantDestino);
     do
     {
@@ -83,7 +82,6 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
                 nombreApellido[i][strcspn(nombreApellido[i], "\n")] = '\0';
                 printf("Ingrese la edad");
                 scanf("%d",&edad[i]);
-                // Limpiar buffer de entrada
                 while (getchar() != '\n');
                 int destinoValido = 0;
                 do
