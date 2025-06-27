@@ -61,6 +61,10 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
     {
         printf("Ingrese la cantidad de pasajeros que desea ingresar (Max. 240)\n");
         scanf("%d", cantPasajeros);
+        if(*cantPasajeros < 0 || *cantPasajeros > 240)
+        {
+            printf("Excedio el limite.\n");
+        }
     } while (*cantPasajeros < 0 || *cantPasajeros > 240);
 
     for (int i = 0; i < *cantPasajeros; i++)
