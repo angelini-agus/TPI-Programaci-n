@@ -3,38 +3,45 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240], char codDestino[240][99], int cantDestino[4], int *cantPasajeros);
+int cargaPasajeros(char dnis[][99], char nombreApellido[240][99], int edad[240], char codDestino[240][99], int cantDestino[4], int *cantPasajeros, int esCredito);
 int validarDNI(char dni[]);
-void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][999], int edad[240], char codDestino[240][99], int *cantPasajeros);
+void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros);
+void mostrarPasajerosCod(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros);
 
 int main()
 {
     int op;
-    char dni[240][999];
+    char dni[240][99];
     char nombreApellido[240][99];
     int edad[240];
     char codDestino[240][99];
-    int cantDestino[4];
     int cantPasajeros;
-    // cantDestino[0]="BRA";
-    // cantDestino[1]="MDQ";
-    // cantDestino[2]="MZA";
-    // cantDestino[3]="BRC";
-    cargaPasajeros(dni, nombreApellido, edad, codDestino, cantDestino, &cantPasajeros);
+    int cantDestino[4];
+    int preciosDestinos[4] = {25000, 14000, 19000, 23000};
+    // cantDestino[0]= "BRA"
+    // cantDestino[1]= "MDQ"
+    // cantDestino[2]= "MZA"
+    // cantDestino[3]= "BRC"
+
+    char esCredito[240][99];
+
+    cargaPasajeros(dni, nombreApellido, edad, codDestino, cantDestino, &cantPasajeros, esCredito);
+
+    //Menú
     do
     {
-        printf("Ingrese op sistema \n1. Mostrar lista de pasajeros ordenada por Apellido y Nombre \n2. Mostrar lista de pasajeros ordenada por Código Destino y Apellido - Nombre \n3. Mostrar lista de Destinos \n4. Buscar por pasajero \n5. Mostrar estadísticas \n6. Salir\n");
+        printf("\n1. Mostrar lista de pasajeros ordenada por Apellido y Nombre \n2. Mostrar lista de pasajeros ordenada por Codigo Destino y Apellido - Nombre \n3. Mostrar lista de Destinos \n4. Buscar por pasajero \n5. Mostrar estadisticas \n6. Salir\n");
         scanf("%d", &op);
         switch (op)
         {
         case 1:
-            // mostrarPasajerosAyN();
+            mostrarPasajerosAyN(nombreApellido, dni, edad, codDestino, &cantPasajeros);
             break;
         case 2:
-            // mostrarPasajerosCod();
+            mostrarPasajerosCod(nombreApellido, dni, edad, codDestino, &cantPasajeros);
             break;
         case 3:
-            // mostrarDestinos();
+            mostrarDestinos(codDestino, cantDestino, preciosDestinos, esCredito);
             break;
         case 4:
             // buscarPasajero();
@@ -54,14 +61,16 @@ int main()
     return 0;
 }
 
-int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240], char codDestino[240][99], int cantDestino[4], int *cantPasajeros)
+int cargaPasajeros(char dni[][99], char nombreApellido[240][99], int edad[240], char codDestino[240][99], int cantDestino[4], int *cantPasajeros, int esCredito)
 {
     int validDni;
     do
     {
         printf("Ingrese la cantidad de pasajeros que desea ingresar (Max. 240)\n");
         scanf("%d", cantPasajeros);
-        if(*cantPasajeros < 0 || *cantPasajeros > 240)
+        while (getchar() != '\n')
+            ; // Limpiar buffer
+        if (*cantPasajeros < 0 || *cantPasajeros > 240)
         {
             printf("Excedio el limite.\n");
         }
@@ -71,12 +80,11 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
     {
         do
         {
-            printf("Ingrese el DNI: ");
-            scanf("%s", dnis[i]);
+            printf("\n%d) Ingrese el DNI: ", i + 1);
+            scanf("%s", dni[i]);
             while (getchar() != '\n')
-                ;
-            // IMPORTANTE LIMPIAR EL BUFFER
-            validDni = validarDNI(dnis[i]);
+                ; // Limpiar buffer
+            validDni = validarDNI(dni[i]);
             if (validDni == 1)
             {
                 printf("DNI Invalido\n");
@@ -87,13 +95,20 @@ int cargaPasajeros(char dnis[][999], char nombreApellido[240][99], int edad[240]
                 printf("Ingrese el Apellido y Nombre: ");
                 fgets(nombreApellido[i], 99, stdin);
                 nombreApellido[i][strcspn(nombreApellido[i], "\n")] = '\0';
-                printf("Ingrese la edad: ");
-                scanf("%d", &edad[i]);
-                // Limpiar buffer de entrada
-                while (getchar() != '\n')
-                    ;
-                int destinoValido = 0;
 
+                do
+                {
+                    printf("Ingrese la edad: ");
+                    scanf("%d", &edad[i]);
+                    while (getchar() != '\n')
+                        ; // Limpiar buffer
+                    if (edad[i] < 0 || edad[i] > 120)
+                    {
+                        printf("Edad invalida. Debe ser entre 0 y 120.\n");
+                    }
+                } while (edad[i] < 0 || edad[i] > 120);
+
+                int destinoValido = 0;
                 do
                 {
                     printf("Ingrese el codigo del destino al que se dirige\nBRA - MDQ - MZA - BRC: ");
@@ -215,62 +230,119 @@ int validarDNI(char dni[])
     }
 }
 
-void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][999], int edad[240], char codDestino[240][99], int *cantPasajeros)
+void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros)
 {
-    int totalPasajeros = 0;
-
-    // Primero contamos cuántos pasajeros hay según que el dni esté cargado (asumiendo que si dni[0] es '\0', no hay pasajero)
-    for (int i = 0; i < 240; i++)
-    {
-        if (strlen(dni[i]) > 0)
-            totalPasajeros++;
-        else
-            break; // Si llegamos a uno vacío, paramos el conteo
-    }
-
     // Selection Sort por nombreApellido
-    for (int i = 0; i < totalPasajeros - 1; i++)
+    for (int i = 0; i < *cantPasajeros - 1; i++)
     {
-        int minIndex = i;
-        for (int j = i + 1; j < totalPasajeros; j++)
+        int indiceMen = i;
+        for (int j = i + 1; j < *cantPasajeros; j++)
         {
-            if (strcmp(nombreApellido[j], nombreApellido[minIndex]) < 0)
+            if (strcmp(nombreApellido[j], nombreApellido[indiceMen]) < 0)
             {
-                minIndex = j;
+                indiceMen = j;
             }
         }
 
-        if (minIndex != i)
+        if (indiceMen != i)
         {
-            // Intercambiar nombreApellido
             char tempNombre[99];
             strcpy(tempNombre, nombreApellido[i]);
-            strcpy(nombreApellido[i], nombreApellido[minIndex]);
-            strcpy(nombreApellido[minIndex], tempNombre);
+            strcpy(nombreApellido[i], nombreApellido[indiceMen]);
+            strcpy(nombreApellido[indiceMen], tempNombre);
 
-            // Intercambiar dni
-            char tempDni[999];
+            char tempDni[99];
             strcpy(tempDni, dni[i]);
-            strcpy(dni[i], dni[minIndex]);
-            strcpy(dni[minIndex], tempDni);
+            strcpy(dni[i], dni[indiceMen]);
+            strcpy(dni[indiceMen], tempDni);
 
-            // Intercambiar edad
             int tempEdad = edad[i];
-            edad[i] = edad[minIndex];
-            edad[minIndex] = tempEdad;
+            edad[i] = edad[indiceMen];
+            edad[indiceMen] = tempEdad;
 
-            // Intercambiar codDestino
             char tempCod[5];
             strcpy(tempCod, codDestino[i]);
-            strcpy(codDestino[i], codDestino[minIndex]);
-            strcpy(codDestino[minIndex], tempCod);
+            strcpy(codDestino[i], codDestino[indiceMen]);
+            strcpy(codDestino[indiceMen], tempCod);
         }
     }
 
-    // Mostrar pasajeros ordenados
     printf("Pasajeros ordenados por Apellido y Nombre:\n");
-    for (int i = 0; i < totalPasajeros; i++)
+    for (int i = 0; i < *cantPasajeros; i++)
     {
-        printf("%d) Nombre y Apellido: %s, DNI: %s, Edad: %d, Codigo Destino: %s\n", i + 1, nombreApellido[i], dni[i], edad[i], codDestino[i]);
+        printf("%d) Nombre y Apellido: %s\tDNI: %s\tEdad: %d\tCodigo Destino: %s\n", i + 1, nombreApellido[i], dni[i], edad[i], codDestino[i]);
     }
+}
+
+void mostrarPasajerosCod(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros)
+{
+    // Selection Sort por codDestino y luego por nombreApellido
+    for (int i = 0; i < *cantPasajeros - 1; i++)
+    {
+        int indiceMen = i;
+        for (int j = i + 1; j < *cantPasajeros; j++)
+        {
+            int cmpCod = strcmp(codDestino[j], codDestino[indiceMen]);
+            if (cmpCod < 0 || (cmpCod == 0 && strcmp(nombreApellido[j], nombreApellido[indiceMen]) < 0))
+            {
+                indiceMen = j;
+            }
+        }
+
+        if (indiceMen != i)
+        {
+            char tempNombre[99];
+            strcpy(tempNombre, nombreApellido[i]);
+            strcpy(nombreApellido[i], nombreApellido[indiceMen]);
+            strcpy(nombreApellido[indiceMen], tempNombre);
+
+            char tempDni[99];
+            strcpy(tempDni, dni[i]);
+            strcpy(dni[i], dni[indiceMen]);
+            strcpy(dni[indiceMen], tempDni);
+
+            int tempEdad = edad[i];
+            edad[i] = edad[indiceMen];
+            edad[indiceMen] = tempEdad;
+
+            char tempCod[5];
+            strcpy(tempCod, codDestino[i]);
+            strcpy(codDestino[i], codDestino[indiceMen]);
+            strcpy(codDestino[indiceMen], tempCod);
+        }
+    }
+
+    printf("Pasajeros ordenados por Codigo Destino y Apellido-Nombre:\n");
+    for (int i = 0; i < *cantPasajeros; i++)
+    {
+        printf("%d) Codigo Destino: %s\tApellido y Nombre: %s\tDNI: %s\tEdad: %d\n", i + 1, codDestino[i], nombreApellido[i], dni[i], edad[i]);
+    }
+}
+
+void mostrarDestinos(char codDestino[240][99], int cantDestino[4], int preciosDestinos[4], char esCredito[240][99])
+{
+    int importeTotalDestinos = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        int importeDestino = 0;
+        importeDestino = cantDestino[i] * preciosDestinos[i];
+        importeTotalDestinos += cantDestino[i] * preciosDestinos[i];
+        if (i == 0)
+        {
+            printf("BRA\tCantidad de pasajeros: %d\tImporte total del destino: %d\n", cantDestino[i], importeDestino);
+        }
+        if (i == 1)
+        {
+            printf("MDQ\tCantidad de pasajeros: %d\tImporte total del destino: %d\n", cantDestino[i], importeDestino);
+        }
+        if (i == 2)
+        {
+            printf("MZA\tCantidad de pasajeros: %d\tImporte total del destino: %d\n", cantDestino[i], importeDestino);
+        }
+        if (i == 3)
+        {
+            printf("BRC\tCantidad de pasajeros: %d\tImporte total del destino: %d\n", cantDestino[i], importeDestino);
+        }
+    }
+    printf("El importe total de todos los destinos es: %d", importeTotalDestinos);
 }
