@@ -232,6 +232,20 @@ int validarDNI(char dni[])
 
 void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros)
 {
+<<<<<<< Updated upstream
+=======
+    int totalPasajeros = 0;
+
+    // Primero contamos cuántos pasajeros hay según que el dni esté cargado (asumiendo que si dni[0] es '\0', no hay pasajero)
+    for (int i = 0; i < *cantPasajeros; i++)
+    {
+        if (strlen(dni[i]) > 0)
+            totalPasajeros++;
+        else
+            break; // Si llegamos a uno vacío, paramos el conteo
+    }
+
+>>>>>>> Stashed changes
     // Selection Sort por nombreApellido
     for (int i = 0; i < *cantPasajeros - 1; i++)
     {
