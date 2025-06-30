@@ -52,7 +52,7 @@ int main()
             mostrarEstadisticas(cantDestino, &cantPasajeros, codDestino, edad);
             break;
         case 6:
-            printf("Saliendo...\n");
+            printf("Saliendo del programa...\nMuchas gracias!");
             break;
         default:
             printf("Opcion invalida\n");
