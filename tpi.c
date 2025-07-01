@@ -8,7 +8,7 @@ void cargaPasajeros(char dnis[][99], char nombreApellido[maxPasajeros][99], int 
 int validarDNI(char dni[]);
 void mostrarPasajerosAyN(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros);
 void mostrarPasajerosCod(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros);
-void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int preciosDestinos[4], char esCredito[maxPasajeros][99], int *cantPasajeros);
+void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int preciosDestinos[4], char esCredito[maxPasajeros][99], int *cantPasajeros, int edad[maxPasajeros]);
 void buscarPasajero(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros, int preciosDestinos[4], char esCredito[maxPasajeros][99]);
 void mostrarEstadisticas(int cantDestino[4], int *cantPasajeros, char codDestino[maxPasajeros][99], int edad[maxPasajeros]);
 
@@ -44,7 +44,7 @@ int main()
             mostrarPasajerosCod(nombreApellido, dni, edad, codDestino, &cantPasajeros);
             break;
         case 3:
-            mostrarDestinos(codDestino, cantDestino, preciosDestinos, esCredito, &cantPasajeros);
+            mostrarDestinos(codDestino, cantDestino, preciosDestinos, esCredito, &cantPasajeros, edad);
             break;
         case 4:
             buscarPasajero(nombreApellido, dni, edad, codDestino, &cantPasajeros, preciosDestinos, esCredito);
@@ -331,12 +331,11 @@ void mostrarPasajerosCod(char nombreApellido[maxPasajeros][99], char dni[maxPasa
     }
 }
 
-void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int preciosDestinos[4], char esCredito[maxPasajeros][99], int *cantPasajeros)
+void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int preciosDestinos[4], char esCredito[maxPasajeros][99], int *cantPasajeros, int edad[maxPasajeros])
 {
     float importeTotalDestinos = 0;
     float importeDestino[4] = {0, 0, 0, 0};
 
-    // hacemos el recargo por tarjeta de todos los viajeros y lo agrupamos por destino
     for (int i = 0; i < *cantPasajeros; i++)
     {
         int idDestino = -1;
@@ -351,10 +350,15 @@ void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int 
 
         if (idDestino != -1)
         {
-            float importe = preciosDestinos[idDestino];
-            if (esCredito[i][0] == 's' || esCredito[i][0] == 'S')
-            {
-                importe = (importe * 1.05); // recargo 5%
+            float importe;
+            if (edad[i] < 5) {
+                importe = 2000.0; // Seguro para menores de 5 años
+            } else {
+                importe = preciosDestinos[idDestino];
+                if (esCredito[i][0] == 's' || esCredito[i][0] == 'S')
+                {
+                    importe = (importe * 1.05); // recargo 5%
+                }
             }
             importeDestino[idDestino] += importe;
         }
@@ -362,8 +366,7 @@ void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int 
 
     for (int i = 0; i < 4; i++)
     {
-        float impDestino = 0;
-        impDestino = importeDestino[i];
+        float impDestino = importeDestino[i];
         importeTotalDestinos += importeDestino[i];
         if (i == 0)
         {
@@ -416,23 +419,28 @@ void buscarPasajero(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros
 
             float importe = 0;
 
-            if (strcmp(codDestino[i], "bra") == 0)
-                importe = preciosDestinos[0];
-            else if (strcmp(codDestino[i], "mdq") == 0)
-                importe = preciosDestinos[1];
-            else if (strcmp(codDestino[i], "mza") == 0)
-                importe = preciosDestinos[2];
-            else if (strcmp(codDestino[i], "brc") == 0)
-                importe = preciosDestinos[3];
+            if (edad[i] < 5) {
+                importe = 2000.0;
+                printf("Forma de pago: Seguro para menores de 5 años\n");
+            } else {
+                if (strcmp(codDestino[i], "bra") == 0)
+                    importe = preciosDestinos[0];
+                else if (strcmp(codDestino[i], "mdq") == 0)
+                    importe = preciosDestinos[1];
+                else if (strcmp(codDestino[i], "mza") == 0)
+                    importe = preciosDestinos[2];
+                else if (strcmp(codDestino[i], "brc") == 0)
+                    importe = preciosDestinos[3];
 
-            if (esCredito[i][0] == 's' || esCredito[i][0] == 'S')
-            {
-                importe = (importe * 1.05);
-                printf("Forma de pago: Tarjeta de credito (5%% recargo)\n");
-            }
-            else
-            {
-                printf("Forma de pago: Efectivo\n");
+                if (esCredito[i][0] == 's' || esCredito[i][0] == 'S')
+                {
+                    importe = (importe * 1.05);
+                    printf("Forma de pago: Tarjeta de credito (5%% recargo)\n");
+                }
+                else
+                {
+                    printf("Forma de pago: Efectivo\n");
+                }
             }
 
             printf("Importe a abonar: $%.2f\n", importe);
