@@ -351,9 +351,12 @@ void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int 
         if (idDestino != -1)
         {
             float importe;
-            if (edad[i] < 5) {
+            if (edad[i] < 5)
+            {
                 importe = 2000.0; // Seguro para menores de 5 años
-            } else {
+            }
+            else
+            {
                 importe = preciosDestinos[idDestino];
                 if (esCredito[i][0] == 's' || esCredito[i][0] == 'S')
                 {
@@ -419,10 +422,20 @@ void buscarPasajero(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros
 
             float importe = 0;
 
-            if (edad[i] < 5) {
+            if (edad[i] < 5)
+            {
                 importe = 2000.0;
-                printf("Forma de pago: Seguro para menores de 5 años\n");
-            } else {
+                if (esCredito[i][0] == 's' || esCredito[i][0] == 'S')
+                {
+                    printf("Forma de pago: Tarjeta de credito\n");
+                }
+                else
+                {
+                    printf("Forma de pago: Efectivo\n");
+                }
+            }
+            else
+            {
                 if (strcmp(codDestino[i], "bra") == 0)
                     importe = preciosDestinos[0];
                 else if (strcmp(codDestino[i], "mdq") == 0)
@@ -479,18 +492,35 @@ void mostrarEstadisticas(int cantDestino[4], int *cantPasajeros, char codDestino
         printf("%s: %.2f%%\n", nombresDestinos[i], porcentaje);
     }
 
-    // Destino +solicitado
+    // Destinos más solicitados (puede haber empate)
     int max = cantDestino[0];
-    int iMax = 0;
     for (int i = 1; i < 4; i++)
     {
         if (cantDestino[i] > max)
         {
             max = cantDestino[i];
-            iMax = i;
         }
     }
-    printf("\nb) Destino mas solicitado: %s con %d pasajeros\n", nombresDestinos[iMax], max);
+    printf("\nb) Destino(s) mas solicitado(s): ");
+    int primero = 1;
+    for (int i = 0; i < 4; i++)
+    {
+        if (cantDestino[i] == max && max > 0)
+        {
+            if (!primero)
+                printf(", ");
+            printf("%s", nombresDestinos[i]);
+            primero = 0;
+        }
+    }
+    if (max > 0)
+    {
+        printf(" con %d pasajeros\n", max);
+    }
+    else
+    {
+        printf("Ninguno\n");
+    }
 
     // c) Porcentaje de menores 5 años por destino + acum
     for (int i = 0; i < *cantPasajeros; i++)
