@@ -2,31 +2,32 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#define maxPasajeros 240
 
-int cargaPasajeros(char dnis[][99], char nombreApellido[240][99], int edad[240], char codDestino[240][99], int cantDestino[4], int *cantPasajeros, char esCredito[240][99]);
+void cargaPasajeros(char dnis[][99], char nombreApellido[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int cantDestino[4], int *cantPasajeros, char esCredito[maxPasajeros][99]);
 int validarDNI(char dni[]);
-void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros);
-void mostrarPasajerosCod(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros);
-void mostrarDestinos(char codDestino[240][99], int cantDestino[4], int preciosDestinos[4], char esCredito[240][99], int *cantPasajeros);
-void buscarPasajero(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros, int preciosDestinos[4], char esCredito[240][99]);
-void mostrarEstadisticas(int cantDestino[4], int *cantPasajeros, char codDestino[240][99], int edad[240]);
+void mostrarPasajerosAyN(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros);
+void mostrarPasajerosCod(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros);
+void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int preciosDestinos[4], char esCredito[maxPasajeros][99], int *cantPasajeros);
+void buscarPasajero(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros, int preciosDestinos[4], char esCredito[maxPasajeros][99]);
+void mostrarEstadisticas(int cantDestino[4], int *cantPasajeros, char codDestino[maxPasajeros][99], int edad[maxPasajeros]);
 
 int main()
 {
     int op;
-    char dni[240][99];
-    char nombreApellido[240][99];
-    int edad[240];
-    char codDestino[240][99];
+    char dni[maxPasajeros][99];
+    char nombreApellido[maxPasajeros][99];
+    int edad[maxPasajeros];
+    char codDestino[maxPasajeros][99];
     int cantPasajeros;
-    int cantDestino[4] = {0, 0, 0, 0};
+    int cantDestino[4] = {0};
     int preciosDestinos[4] = {25000, 14000, 19000, 23000};
     // cantDestino[0]= "BRA"
     // cantDestino[1]= "MDQ"
     // cantDestino[2]= "MZA"
     // cantDestino[3]= "BRC"
 
-    char esCredito[240][99];
+    char esCredito[maxPasajeros][99];
 
     cargaPasajeros(dni, nombreApellido, edad, codDestino, cantDestino, &cantPasajeros, esCredito);
 
@@ -63,7 +64,7 @@ int main()
     return 0;
 }
 
-int cargaPasajeros(char dni[][99], char nombreApellido[240][99], int edad[240], char codDestino[240][99], int cantDestino[4], int *cantPasajeros, char esCredito[240][99])
+void cargaPasajeros(char dni[][99], char nombreApellido[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int cantDestino[4], int *cantPasajeros, char esCredito[maxPasajeros][99])
 {
     int validDni;
     do
@@ -72,11 +73,11 @@ int cargaPasajeros(char dni[][99], char nombreApellido[240][99], int edad[240], 
         scanf("%d", cantPasajeros);
         while (getchar() != '\n')
             ;
-        if (*cantPasajeros < 0 || *cantPasajeros > 240)
+        if (*cantPasajeros < 0 || *cantPasajeros > maxPasajeros)
         {
             printf("Excedio el limite.\n");
         }
-    } while (*cantPasajeros < 0 || *cantPasajeros > 240);
+    } while (*cantPasajeros < 0 || *cantPasajeros > maxPasajeros);
 
     for (int i = 0; i < *cantPasajeros; i++)
     {
@@ -97,7 +98,6 @@ int cargaPasajeros(char dni[][99], char nombreApellido[240][99], int edad[240], 
                 printf("Ingrese el Apellido y Nombre: ");
                 fgets(nombreApellido[i], 99, stdin);
                 nombreApellido[i][strcspn(nombreApellido[i], "\n")] = '\0';
-
                 do
                 {
                     printf("Abona con tarjeta de credito? (s/n): ");
@@ -190,7 +190,6 @@ int cargaPasajeros(char dni[][99], char nombreApellido[240][99], int edad[240], 
             }
         } while (validDni == 1);
     }
-    return 0;
 }
 
 int validarDNI(char dni[])
@@ -201,7 +200,7 @@ int validarDNI(char dni[])
     {
         for (int i = 0; i < longitud; i++)
         {
-            if (!isdigit((unsigned char)dni[i]))
+            if (!isdigit((unsigned char)dni[i])) // Comprueba que lo que se ingresa sean solo numero (entra el if si no es un digito)
             {
                 printf("El DNI solo debe contener numeros\n");
                 return 1;
@@ -225,7 +224,7 @@ int validarDNI(char dni[])
     else if (longitud == 8)
     {
         // Debe empezar entre 10 y 60
-        int primerosDos = (dni[0] - '0') * 10 + (dni[1] - '0');
+        int primerosDos = (dni[0] - '0') * 10 + (dni[1] - '0'); // restarle el 0 lo pasa de caracter a valor numerico
         if (primerosDos >= 10 && primerosDos <= 60)
         {
             return 0;
@@ -243,7 +242,7 @@ int validarDNI(char dni[])
     }
 }
 
-void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros)
+void mostrarPasajerosAyN(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros)
 {
     // Selection Sort por nombreApellido
     for (int i = 0; i < *cantPasajeros - 1; i++)
@@ -287,7 +286,7 @@ void mostrarPasajerosAyN(char nombreApellido[240][99], char dni[240][99], int ed
     }
 }
 
-void mostrarPasajerosCod(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros)
+void mostrarPasajerosCod(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros)
 {
     // Selection Sort por codDestino y luego por nombreApellido
     for (int i = 0; i < *cantPasajeros - 1; i++)
@@ -332,7 +331,7 @@ void mostrarPasajerosCod(char nombreApellido[240][99], char dni[240][99], int ed
     }
 }
 
-void mostrarDestinos(char codDestino[240][99], int cantDestino[4], int preciosDestinos[4], char esCredito[240][99], int *cantPasajeros)
+void mostrarDestinos(char codDestino[maxPasajeros][99], int cantDestino[4], int preciosDestinos[4], char esCredito[maxPasajeros][99], int *cantPasajeros)
 {
     float importeTotalDestinos = 0;
     float importeDestino[4] = {0, 0, 0, 0};
@@ -386,7 +385,7 @@ void mostrarDestinos(char codDestino[240][99], int cantDestino[4], int preciosDe
     printf("El importe total de todos los destinos es: %.2f\n", importeTotalDestinos);
 }
 
-void buscarPasajero(char nombreApellido[240][99], char dni[240][99], int edad[240], char codDestino[240][99], int *cantPasajeros, int preciosDestinos[4], char esCredito[240][99])
+void buscarPasajero(char nombreApellido[maxPasajeros][99], char dni[maxPasajeros][99], int edad[maxPasajeros], char codDestino[maxPasajeros][99], int *cantPasajeros, int preciosDestinos[4], char esCredito[maxPasajeros][99])
 {
     char dniBuscado[99];
     int validDni, encontrado = 0;
@@ -416,7 +415,7 @@ void buscarPasajero(char nombreApellido[240][99], char dni[240][99], int edad[24
             printf("Codigo de Destino: %s\n", codDestino[i]);
 
             float importe = 0;
-            
+
             if (strcmp(codDestino[i], "bra") == 0)
                 importe = preciosDestinos[0];
             else if (strcmp(codDestino[i], "mdq") == 0)
@@ -435,7 +434,7 @@ void buscarPasajero(char nombreApellido[240][99], char dni[240][99], int edad[24
             {
                 printf("Forma de pago: Efectivo\n");
             }
-            
+
             printf("Importe a abonar: $%.2f\n", importe);
 
             encontrado = 1;
@@ -449,7 +448,7 @@ void buscarPasajero(char nombreApellido[240][99], char dni[240][99], int edad[24
     }
 }
 
-void mostrarEstadisticas(int cantDestino[4], int *cantPasajeros, char codDestino[240][99], int edad[240])
+void mostrarEstadisticas(int cantDestino[4], int *cantPasajeros, char codDestino[maxPasajeros][99], int edad[maxPasajeros])
 {
     char *nombresDestinos[4] = {"BRA", "MDQ", "MZA", "BRC"};
     int menoresPorDestino[4] = {0, 0, 0, 0};
